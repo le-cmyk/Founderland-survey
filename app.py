@@ -6,13 +6,13 @@ import base64
 import pandas as pd  # pip install pandas
 import streamlit as st  # pip install streamlit
 
-from Functions.creating_df_and_plots import calculate_column_percentages,create_stacked_barplot,calculate_event_occurrences, create_horizontal_bar_chart,plot_box_with_mean
+from Functions.creating_df_and_plots import calculate_column_percentages,create_stacked_barplot,calculate_event_occurrences, create_horizontal_bar_chart,plot_box_with_mean,create_pie_chart
 from Functions.open_questions import OP1,OP2,OP3,OP4,OP5,OP6
 
 # emojis: https://www.webfx.com/tools/emoji-cheat-sheet/
 st.set_page_config(page_title="Responses Founderland", page_icon=":bar_chart:", layout="wide")
 
-st.title("Funderland Survey")
+st.title("Founderland Survey")
 
 # ----Global variable
 
@@ -36,7 +36,7 @@ differents_question={
                 "Become a mentor",
                 "Find a Co-Founder"],
     "questions":[
-                "Funding",
+                "Knowledge about Funding",
                 "Access to network (partners, funders, etc)",
                 "Meeting other WoC founders across Europe",
                 "Event invitations",
@@ -57,19 +57,31 @@ differents_question={
                 "Get mentorship10",
                 "Become a mentor11",
                 "Find a Co-Founder12"],
+    "Frequences":[
+                "How frequently do you access our Founderland community platform?",
+                "How frequently do you access our Slack Channel?"
+                ],
+    "Slack_channel":[
+                "Knowledge about funding13",
+                "Access to network (partners, funders, etc)14",
+                "Meeting other WoC founders across Europe15",
+                "Event invitations16",
+                "Safe Space17",
+                "Access to funding opportunities18",
+                "Learn how to scale your business19",
+                "Get mentorship20",
+                "Become a mentor21",
+                "Find a Co-Founder22",
+                ],
+    "General info":[
+                "Did Founderland expand your startup network?",
+                "Did Founderland facilitate meaningful connections with other community founders?",
+                "Has Founderland helped you to raise capital for your startup?",
+                "Has Founderland helped you to increase your visibility?",
+                ],
 
 }
 
-
-
-
-# ---- READ EXCEL ----
-st.markdown("""---""")
-
-
-
-
-st.markdown("""---""")
 @st.cache_data
 def read_excel (path):
     return pd.read_excel(path)
@@ -77,14 +89,58 @@ def read_excel (path):
 df = read_excel(path)
 
 
+# ---- READ EXCEL ----
+st.markdown("""---""")
+st.write("## General info")
+#region General info
+c_1,c_2=st.columns([1,1])
+c_3,c_4=st.columns([1,1])
 
+dic = {0: "No",
+        1: "Yes",}
+
+df[differents_question["General info"]] = df[differents_question["General info"]].apply(lambda col: col.map(dic))
+
+
+c_1.plotly_chart(create_pie_chart(df,column_name="Did Founderland expand your startup network?",
+                                  title="Did Founderland expand your startup network?",
+                                  colors=["#FF5A5F", "#00A699"]),
+                                  use_container_width =True)
+
+c_2.plotly_chart(create_pie_chart(df, column_name="Did Founderland facilitate meaningful connections with other community founders?",
+                 title="Did Founderland facilitate meaningful \nconnections with other community founders?",
+                 colors=["#FF5A5F", "#00A699"]),use_container_width =True)
+
+c_3.plotly_chart(create_pie_chart(df, column_name="Has Founderland helped you to raise capital for your startup?",
+                 title="Has Founderland helped you to raise capital for your startup?",
+                 colors=["#FF5A5F", "#00A699"]),use_container_width =True)
+c_4.plotly_chart(create_pie_chart(df, column_name="Has Founderland helped you to increase your visibility?",
+                 title="Has Founderland helped you to increase your visibility?",
+                 colors=["#FF5A5F", "#00A699"]),use_container_width =True)
+
+
+
+#endregion
+
+
+
+
+
+st.markdown("""---""")
+st.write("## Deep into the survey")
+
+exp= st.expander("As a member of Founderland, how has your experience been?")
 exp1= st.expander("Why did you join Founderland?")
 exp2= st.expander("Select all the reasons for joining the community")
 exp3= st.expander("Which program do you prefer to access or participate in?")
+expfreq= st.expander("Frequences")
+slack_chanel= st.expander("Slack Chanel info")
 exp4= st.expander("What benefits have you received from the community?")
 exp5= st.expander("Rate your gain from the community")
 
-st.write("#### Now some open question")
+
+
+st.write("#### Now some open questions")
 exp6= st.expander("Report orriented view what have you learn and your opinion")
 exp7= st.expander("Feedback on how has your experience been?")
 exp8= st.expander("What makes one platform better than the other")
@@ -92,6 +148,17 @@ exp9= st.expander("What motivated you to start your company?")
 exp10= st.expander("What would you say are your biggest challenges in your founder journey?")
 exp11= st.expander("How has Founderland affected your challenges as a founder?")
 
+
+
+#region exp
+
+exp.plotly_chart(create_pie_chart(df,column_name="As a member of Founderland, how has your experience been?",
+                                  title="As a member of Founderland, how has your experience been?",
+                                  order=['Very satisfied','Somewhat satisfied', 'Neither satisfied nor dissatisfied','Somewhat dissatisfied']
+                                  ),
+                                  use_container_width =True)
+
+#endregion
 
 #region exp1
 Q2 = calculate_column_percentages(df,differents_question["Why did you join Founderland? Select all that apply"])
@@ -114,7 +181,6 @@ exp4.plotly_chart(create_horizontal_bar_chart(Q5, "What benefits have you receiv
 #endregion
 
 #region exp5
-#experiments
 dic = {"Gained  a lot": 3,
         "Gained some" : 2,
         "Gained nothing" : 0,
@@ -149,6 +215,32 @@ exp10.write(OP5(),use_container_width=True)
 
 #region exp11
 exp11.write(OP6(),use_container_width=True)
+#endregion
+
+#region expfreq
+dic = {"Once a week": 3,
+        "Sometimes" : 1,
+        "Never" : 0,
+        "Once a month" : 2,
+        "More than once a week" : 4}
+
+Qfreq = df[differents_question["Frequences"]].apply(lambda col: col.map(dic))
+Qfreq = Qfreq.melt(var_name="Column Name", value_name="Value")
+
+expfreq.plotly_chart(plot_box_with_mean(Qfreq , x= "Value",y="Column Name",title="Frequences of access",legend_mapping=dic),use_container_width=True)
+#endregion
+
+#region slack_chanel
+
+c_1,c_2=slack_chanel.columns([1,1.2])
+c_1.plotly_chart(create_pie_chart(df,column_name="How useful/effective has our Slack channel been for your endeavors?",
+                                           title="How useful/effective has our Slack channel been for your endeavors?"),use_container_width =True)
+
+
+Qslack = calculate_column_percentages(df,differents_question["Slack_channel"])
+c_2.plotly_chart (create_stacked_barplot(Qslack,"Attribute","Percentage",titre="In what aspects has the Slack channel been useful to you?"),use_container_width =True)
+
+
 #endregion
 
 # - LIENS

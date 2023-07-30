@@ -2,6 +2,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
 import streamlit as st
+from typing import List, Optional, Union
 
 
 
@@ -35,7 +36,7 @@ def create_stacked_barplot(df, x, y, titre):
     fig.add_trace(go.Bar(
         x=df[x],
         y=df[y],
-        name='Percentage',
+        name='Actual Percentage',
         text=df[y].apply(lambda x: f"{x:.2f}%"),
         textposition='auto',
         marker=dict(color='blue', line=dict(color='blue', width=1)),  # Style pour le pourcentage
@@ -113,7 +114,7 @@ def create_horizontal_bar_chart(df, title):
         xaxis_title='Preference',
         yaxis_title='Name',
         coloraxis=dict(colorscale=color_scale,showscale=False),
-        showlegend=True,  # Hide the legend to remove the colorbar
+        showlegend=False,  # Hide the legend to remove the colorbar
     )
 
     return fig
@@ -172,5 +173,57 @@ def plot_box_with_mean(df, x, y, title="", legend_mapping=None):
         coloraxis=dict(colorscale=color_scale,showscale=False)
     )
 
+    return fig
+
+
+def create_pie_chart(df: pd.DataFrame, column_name: str, title: str,
+                     order: Optional[List[str]] = None,
+                     colors: Optional[List[str]] = None) -> None:
+    """
+    Crée un graphique en camembert (pie chart) à partir d'une colonne spécifiée d'un DataFrame.
+
+    Paramètres :
+        - df (pd.DataFrame) : Le DataFrame contenant les données.
+        - column_name (str) : Le nom de la colonne du DataFrame à utiliser pour le graphique.
+        - title (str) : Le titre du graphique en camembert.
+        - order (List[str], optionnel) : L'ordre personnalisé d'affichage des catégories.
+        - colors (List[str], optionnel) : Les couleurs personnalisées pour chaque catégorie.
+
+    Exemple d'utilisation :
+        Supposons que vous ayez un DataFrame appelé "df" avec une colonne "satisfaction"
+        contenant les données, et vous voulez créer un graphique en camembert avec le titre
+        "Satisfaction des clients" avec un ordre personnalisé et des couleurs spécifiques :
+
+        create_pie_chart(df, "satisfaction", "Satisfaction des clients",
+                         order=["Somewhat satisfied", "Neither satisfied nor dissatisfied", "Somewhat dissatisfied", "Very satisfied"],
+                         colors=["blue", "gray", "red", "green"])
+    """
+    # Récupération des données de la colonne spécifiée du DataFrame
+    data = df[column_name].tolist()
+
+    # Comptage des occurrences de chaque catégorie
+    counts = {}
+    for category in data:
+        counts[category] = counts.get(category, 0) + 1
+
+    # Préparation des données pour le graphique en camembert
+    if order:
+        labels = [cat for cat in order if cat in counts]
+    else:
+        labels = list(counts.keys())
+    
+    values = [counts[cat] for cat in labels]
+
+    # Création du graphique en camembert avec Plotly
+    fig = go.Figure(data=[go.Pie(labels=labels, values=values)])
+
+    # Personnalisation des couleurs
+    if colors:
+        fig.update_traces(marker=dict(colors=colors))
+
+    # Mise en forme du titre du graphique
+    fig.update_layout(title_text=title)
+
+    # Affichage du graphique
     return fig
 
