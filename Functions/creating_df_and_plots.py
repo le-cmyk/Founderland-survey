@@ -5,22 +5,24 @@ import streamlit as st
 
 
 
-
 def calculate_column_percentages(df, columns_of_interest):
     # Calculate the total number of respondents
     total_respondents = len(df)
     
-    # Create a DataFrame to store the percentages
-    df_percentages = pd.DataFrame(columns=['Attribute', 'Percentage'])
+    # Create lists to store the data
+    attributes = []
+    percentages = []
     
     # Calculate the percentage for each attribute in the specified columns
     for column in columns_of_interest:
-        percentages_valeur  = df[column].count()/total_respondents*100
-        percentages_df = pd.DataFrame({'Attribute': [column], 'Percentage': [round(percentages_valeur,2)]})
-        df_percentages = df_percentages.append(percentages_df, ignore_index=True)
+        percentages_valeur  = df[column].count() / total_respondents * 100
+        attributes.append(column)
+        percentages.append(round(percentages_valeur, 2))
 
+    # Create a DataFrame from the lists
+    df_percentages = pd.DataFrame({'Attribute': attributes, 'Percentage': percentages})
     
-    return df_percentages.sort_values(by="Percentage",ascending= False)
+    return df_percentages.sort_values(by="Percentage", ascending=False)
 
 def create_stacked_barplot(df, x, y, titre):
     # Calcul de la marge de progression vers 100
