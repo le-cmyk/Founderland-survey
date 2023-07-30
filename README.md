@@ -1,8 +1,8 @@
 
-# Interactive Dashboard with Python – Streamlit
+# Result of a funderland survey
 
-Dashboard for Kickstarter built in Python and the Streamlit library to visualize the dataset.
-
+Presentation in a expander way 
+Open question summarized with chat GBT
 
 ## Run the app
 ```Powershell
