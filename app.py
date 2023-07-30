@@ -92,6 +92,7 @@ df = read_excel(path)
 # ---- READ EXCEL ----
 st.markdown("""---""")
 st.write("## General info")
+
 #region General info
 c_1,c_2=st.columns([1,1])
 c_3,c_4=st.columns([1,1])
@@ -122,10 +123,7 @@ c_4.plotly_chart(create_pie_chart(df, column_name="Has Founderland helped you to
 
 #endregion
 
-
-
-
-
+# --- Deep into the survey ----
 st.markdown("""---""")
 st.write("## Deep into the survey")
 
@@ -252,14 +250,6 @@ SOURCES ={
     "Github": "https://github.com/le-cmyk/Kickstarter-Dashboard"
 }
 
-# - Téléchargement des données 
-
-def download_button(data, file_name, button_text):
-    csv = data.to_csv(index=False)
-    b64 = base64.b64encode(csv.encode()).decode()
-    href = f'<a href="data:file/csv;base64,{b64}" download="{file_name}">{button_text}</a>'
-    st.markdown(href, unsafe_allow_html=True)
-
 c_1, c_2,c_3 = st.columns(3)
 with c_1:
     for clé, link in LIEN.items():
@@ -268,7 +258,15 @@ with c_2:
     for clé, link in SOURCES.items():
         st.write(f"[{clé}]({link})")
 with c_3:
-    download_button(df, 'data.csv', '📄 Download Data')
+
+    with open(path, "rb") as template_file:
+        template_byte = template_file.read()
+
+    st.download_button(label="Download responses",
+                        data=template_byte,
+                        file_name=path,
+                        mime='application/octet-stream')
+
 
 
 
