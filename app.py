@@ -192,27 +192,27 @@ exp5.plotly_chart(plot_box_with_mean(Q6 , x= "Value",y="Column Name",title="Resu
 #endregion
 
 #region exp6
-exp6.write(OP1(),use_container_width=True)
+exp6.write(OP1())#,use_container_width=True)
 #endregion
 
 #region exp7
-exp7.write(OP2(),use_container_width=True)
+exp7.write(OP2())#,use_container_width=True)
 #endregion
 
 #region exp8
-exp8.write(OP3(),use_container_width=True)
+exp8.write(OP3())#,use_container_width=True)
 #endregion
 
 #region exp9
-exp9.write(OP4(),use_container_width=True)
+exp9.write(OP4())#,use_container_width=True)
 #endregion
 
 #region exp10
-exp10.write(OP5(),use_container_width=True)
+exp10.write(OP5())#,use_container_width=True)
 #endregion
 
 #region exp11
-exp11.write(OP6(),use_container_width=True)
+exp11.write(OP6())#,use_container_width=True)
 #endregion
 
 #region expfreq
